@@ -1,0 +1,95 @@
+{% extends 'html/core.html' %}
+{% load static %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/index.css' %}">
+{% endblock css %}
+{% block content %}
+<div class="container">
+<div class="cart_section">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-10 offset-lg-1">
+                <div class="cart_container">
+                    <div class="cart_title">Shopping Cart<small> (1 item in your cart) </small></div>
+                    <div class="cart_items">
+                        <ul class="cart_list">
+                            <li class="cart_item clearfix">
+                                <div class="cart_item_image"><img src="https://i.imgur.com/qqBRWD5.jpg" alt=""></div>
+                                <div class="cart_item_info d-flex flex-md-row flex-column justify-content-between">
+                                    <div class="cart_item_name cart_info_col">
+                                        <div class="cart_item_title">Name</div>
+                                        <div class="cart_item_text">Samsung C7 Pro</div>
+                                    </div>
+                                    <div class="cart_item_color cart_info_col">
+                                        <div class="cart_item_title">Color</div>
+                                        <div class="cart_item_text"><span style="background-color:#999999;"></span>Silver</div>
+                                    </div>
+                                    <div class="cart_item_quantity cart_info_col">
+                                        <div class="cart_item_title">Quantity</div>
+                                        <div class="cart_item_text">1</div>
+                                    </div>
+                                    <div class="cart_item_price cart_info_col">
+                                        <div class="cart_item_title">Price</div>
+                                        <div class="cart_item_text">Rs. {{price}}</div>
+                                    </div>
+                                    <div class="cart_item_total cart_info_col">
+                                        <div class="cart_item_title">Total</div>
+                                        <div class="cart_item_text">Rs. {{price}}</div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="order_total">
+                        <div class="order_total_content text-md-right">
+                            <div class="order_total_title">Order Total:</div>
+                            <div class="order_total_amount">Rs. {{price}}</div>
+                        </div>
+                    </div>
+                    <div class="cart_buttons"> <button type="button" class="button cart_button_clear" >Continue Shopping</button> <button type="button" class="button cart_button_checkout" id="payment-button">Pay with Khalti</button> </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock content %}
+
+{% block script %}
+<script>
+        var config = {
+            // replace the publicKey with yours
+            "publicKey": "test_public_key_dc74e0fd57cb46cd93832aee0a390234",
+            "productIdentity": "1234567890",
+            "productName": "Dragon",
+            "productUrl": "http://gameofthrones.wikia.com/wiki/Dragons",
+            "paymentPreference": [
+                "KHALTI",
+                "EBANKING",
+                "MOBILE_BANKING",
+                "CONNECT_IPS",
+                "SCT",
+                ],
+            "eventHandler": {
+                onSuccess (payload) {
+                    // hit merchant api for initiating verfication
+                    console.log(payload);
+                },
+                onError (error) {
+                    console.log(error);
+                },
+                onClose () {
+                    console.log('widget is closing');
+                }
+            }
+        };
+
+        var checkout = new KhaltiCheckout(config);
+        var btn = document.getElementById("payment-button");
+        btn.onclick = function () {
+            // minimum transaction amount must be 10, i.e 1000 in paisa.
+            checkout.show({amount: {{price}}*100});
+        }
+    </script>
+{% endblock script %}
